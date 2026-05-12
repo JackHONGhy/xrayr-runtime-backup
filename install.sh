@@ -45,8 +45,15 @@ fi
 echo "Installing files..."
 tar -xzf "${TMP_DIR}/${ARCHIVE}" -C /
 chmod +x /usr/local/XrayR/XrayR
-ln -sf /usr/local/XrayR/XrayR /usr/local/bin/XrayR
-ln -sf /usr/local/XrayR/XrayR /usr/local/bin/xrayr
+cat >/usr/local/bin/XrayR <<'EOF'
+#!/usr/bin/env bash
+exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml "$@"
+EOF
+cat >/usr/local/bin/xrayr <<'EOF'
+#!/usr/bin/env bash
+exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml "$@"
+EOF
+chmod +x /usr/local/bin/XrayR /usr/local/bin/xrayr
 
 systemctl daemon-reload
 systemctl enable XrayR
