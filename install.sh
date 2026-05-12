@@ -51,6 +51,8 @@ tar -xzf "${TMP_DIR}/${ARCHIVE}" -C /
 chmod +x /usr/local/XrayR/XrayR
 install -m 0755 "${TMP_DIR}/${MANAGER}" /usr/bin/XrayR
 ln -sf /usr/bin/XrayR /usr/bin/xrayr
+ln -sf /usr/bin/XrayR /usr/local/bin/XrayR
+ln -sf /usr/bin/XrayR /usr/local/bin/xrayr
 
 systemctl daemon-reload
 systemctl enable XrayR
