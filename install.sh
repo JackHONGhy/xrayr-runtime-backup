@@ -4,6 +4,7 @@ set -euo pipefail
 REPO="${XRAYR_REPO:-JackHONGhy/xrayr-runtime-backup}"
 BRANCH="${XRAYR_BRANCH:-master}"
 ARCHIVE="xrayr-0.9.4-linux-amd64-default-config.tar.gz"
+MANAGER="xrayr-manager.sh"
 SHA256="2376ab435eee70e31b9553423865f37289b3e438bb79f01f90f7b49ea91825ff"
 BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 TMP_DIR="$(mktemp -d)"
@@ -34,6 +35,9 @@ echo "Downloading XrayR runtime package..."
 curl -fL --retry 3 --connect-timeout 15 \
   -o "${TMP_DIR}/${ARCHIVE}" \
   "${BASE_URL}/${ARCHIVE}"
+curl -fL --retry 3 --connect-timeout 15 \
+  -o "${TMP_DIR}/${MANAGER}" \
+  "${BASE_URL}/${MANAGER}"
 
 echo "${SHA256}  ${TMP_DIR}/${ARCHIVE}" | sha256sum -c -
 
@@ -45,21 +49,8 @@ fi
 echo "Installing files..."
 tar -xzf "${TMP_DIR}/${ARCHIVE}" -C /
 chmod +x /usr/local/XrayR/XrayR
-cat >/usr/local/bin/XrayR <<'EOF'
-#!/usr/bin/env bash
-if [ "$#" -eq 0 ]; then
-  exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml
-fi
-exec /usr/local/XrayR/XrayR "$@"
-EOF
-cat >/usr/local/bin/xrayr <<'EOF'
-#!/usr/bin/env bash
-if [ "$#" -eq 0 ]; then
-  exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml
-fi
-exec /usr/local/XrayR/XrayR "$@"
-EOF
-chmod +x /usr/local/bin/XrayR /usr/local/bin/xrayr
+install -m 0755 "${TMP_DIR}/${MANAGER}" /usr/bin/XrayR
+ln -sf /usr/bin/XrayR /usr/bin/xrayr
 
 systemctl daemon-reload
 systemctl enable XrayR
