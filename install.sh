@@ -47,11 +47,17 @@ tar -xzf "${TMP_DIR}/${ARCHIVE}" -C /
 chmod +x /usr/local/XrayR/XrayR
 cat >/usr/local/bin/XrayR <<'EOF'
 #!/usr/bin/env bash
-exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml "$@"
+if [ "$#" -eq 0 ]; then
+  exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml
+fi
+exec /usr/local/XrayR/XrayR "$@"
 EOF
 cat >/usr/local/bin/xrayr <<'EOF'
 #!/usr/bin/env bash
-exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml "$@"
+if [ "$#" -eq 0 ]; then
+  exec /usr/local/XrayR/XrayR --config /etc/XrayR/config.yml
+fi
+exec /usr/local/XrayR/XrayR "$@"
 EOF
 chmod +x /usr/local/bin/XrayR /usr/local/bin/xrayr
 
