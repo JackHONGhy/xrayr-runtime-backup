@@ -45,6 +45,8 @@ fi
 echo "Installing files..."
 tar -xzf "${TMP_DIR}/${ARCHIVE}" -C /
 chmod +x /usr/local/XrayR/XrayR
+ln -sf /usr/local/XrayR/XrayR /usr/local/bin/XrayR
+ln -sf /usr/local/XrayR/XrayR /usr/local/bin/xrayr
 
 systemctl daemon-reload
 systemctl enable XrayR
