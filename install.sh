@@ -3,10 +3,8 @@ set -euo pipefail
 
 REPO="${XRAYR_REPO:-JackHONGhy/xrayr-runtime-backup}"
 BRANCH="${XRAYR_BRANCH:-master}"
-ARCHIVE="xrayr-0.9.4-linux-amd64-default-config.tar.gz"
 MANAGER="xrayr-manager.sh"
-SHA256="2376ab435eee70e31b9553423865f37289b3e438bb79f01f90f7b49ea91825ff"
-BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
+BASE_URL="${XRAYR_BASE_URL:-https://raw.githubusercontent.com/${REPO}/${BRANCH}}"
 TMP_DIR="$(mktemp -d)"
 
 cleanup() {
@@ -18,6 +16,24 @@ if [ "$(id -u)" -ne 0 ]; then
   echo "This installer must be run as root." >&2
   exit 1
 fi
+
+case "$(uname -m)" in
+  x86_64|amd64)
+    ARCHIVE="xrayr-0.9.4-linux-amd64-default-config.tar.gz"
+    SHA256="2376ab435eee70e31b9553423865f37289b3e438bb79f01f90f7b49ea91825ff"
+    ARCH_NAME="linux-amd64"
+    ;;
+  aarch64|arm64)
+    ARCHIVE="xrayr-0.9.4-linux-arm64-default-config.tar.gz"
+    SHA256="43fdc96a9ff6362bbf3d917ff5adcfb856e67d3d44615a5bed6cf6ea84e30e64"
+    ARCH_NAME="linux-arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $(uname -m)" >&2
+    echo "Supported architectures: x86_64/amd64, aarch64/arm64" >&2
+    exit 1
+    ;;
+esac
 
 need_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -31,6 +47,7 @@ need_cmd tar
 need_cmd sha256sum
 need_cmd systemctl
 
+echo "Detected architecture: ${ARCH_NAME}"
 echo "Downloading XrayR runtime package..."
 curl -fL --retry 3 --connect-timeout 15 \
   -o "${TMP_DIR}/${ARCHIVE}" \
@@ -58,7 +75,7 @@ systemctl daemon-reload
 systemctl enable XrayR
 
 echo
-echo "XrayR installed."
+echo "XrayR installed for ${ARCH_NAME}."
 echo "Edit /etc/XrayR/config.yml before starting the service:"
 echo "  nano /etc/XrayR/config.yml"
 echo
