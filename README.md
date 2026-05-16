@@ -1,4 +1,4 @@
-# XrayR 多架构运行包
+# XrayR Automated Install Script
 
 这个项目用于保存一份可直接恢复安装的 XrayR 0.9.4 运行包，并提供一键安装脚本。
 
@@ -19,7 +19,7 @@
 在目标服务器上使用 root 用户运行：
 
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/JackHONGhy/xrayr-runtime-backup/master/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/JackHONGhy/xrayr-automated-install-script/master/install.sh)
 ```
 
 脚本会自动完成：
