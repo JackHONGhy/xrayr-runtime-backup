@@ -17,7 +17,9 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-case "$(uname -m)" in
+SYSTEM_ARCH="$(uname -m)"
+
+case "${SYSTEM_ARCH}" in
   x86_64|amd64)
     ARCHIVE="xrayr-0.9.4-linux-amd64-default-config.tar.gz"
     SHA256="2376ab435eee70e31b9553423865f37289b3e438bb79f01f90f7b49ea91825ff"
@@ -29,7 +31,7 @@ case "$(uname -m)" in
     ARCH_NAME="linux-arm64"
     ;;
   *)
-    echo "Unsupported architecture: $(uname -m)" >&2
+    echo "Unsupported architecture: ${SYSTEM_ARCH}" >&2
     echo "Supported architectures: x86_64/amd64, aarch64/arm64" >&2
     exit 1
     ;;
@@ -47,7 +49,11 @@ need_cmd tar
 need_cmd sha256sum
 need_cmd systemctl
 
-echo "Detected architecture: ${ARCH_NAME}"
+echo "System architecture detected: ${SYSTEM_ARCH}"
+echo "Matched XrayR package architecture: ${ARCH_NAME}"
+echo "Selected package: ${ARCHIVE}"
+echo "Starting installation for ${ARCH_NAME}..."
+echo
 echo "Downloading XrayR runtime package..."
 curl -fL --retry 3 --connect-timeout 15 \
   -o "${TMP_DIR}/${ARCHIVE}" \

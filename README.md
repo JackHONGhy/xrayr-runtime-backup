@@ -25,6 +25,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/JackHONGhy/xrayr-runtime-backu
 脚本会自动完成：
 
 - 检测当前系统 CPU 架构
+- 显示识别到的系统架构和即将安装的对应架构版本
 - 下载对应架构的 XrayR 运行包
 - 校验运行包 SHA256
 - 解压文件到 `/usr/local/XrayR` 和 `/etc/XrayR`
